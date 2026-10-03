@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>HeaderLens | Request Header Inspector</title>
+
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+
+    <div class="brand">
+      <div class="brand-logo">⌁</div>
+
+      <div>
+        <h1>HeaderLens</h1>
+        <span>Request Header Inspector</span>
+      </div>
+    </div>
+
+    <div class="api-status">
+      <span class="status-dot"></span>
+      API ONLINE
+    </div>
+
+  </header>
+
+
+  <main class="container">
+
+    <!-- HERO -->
+    <section class="hero">
+
+      <div class="badge">
+        REST API • REQUEST INSPECTOR
+      </div>
+
+      <h2>
+        Discover what your
+        <span>browser reveals.</span>
+      </h2>
+
+      <p>
+        Inspect your request headers and instantly see your IP address,
+        preferred language and browser information.
+      </p>
+
+    </section>
+
+
+    <!-- API TERMINAL -->
+    <section class="terminal-card">
+
+      <div class="terminal-header">
+
+        <div class="terminal-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <span>API REQUEST</span>
+
+      </div>
+
+
+      <div class="request-line">
+
+        <span class="method">GET</span>
+
+        <code>/api/whoami</code>
+
+        <button id="inspectBtn">
+          Inspect Request →
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- REQUEST INFORMATION -->
+    <section class="information">
+
+      <div class="section-heading">
+
+        <span>YOUR REQUEST</span>
+
+        <h3>Request information</h3>
+
+      </div>
+
+
+      <div class="info-grid">
+
+        <div class="info-card">
+
+          <div class="card-number">
+            01
+          </div>
+
+          <h4>IP Address</h4>
+
+          <p>
+            The network address detected from your request.
+          </p>
+
+          <div
+            class="value"
+            id="ipAddress"
+          >
+            —
+          </div>
+
+        </div>
+
+
+        <div class="info-card">
+
+          <div class="card-number">
+            02
+          </div>
+
+          <h4>Language</h4>
+
+          <p>
+            Languages your browser prefers when receiving content.
+          </p>
+
+          <div
+            class="value"
+            id="language"
+          >
+            —
+          </div>
+
+        </div>
+
+
+        <div class="info-card">
+
+          <div class="card-number">
+            03
+          </div>
+
+          <h4>Software</h4>
+
+          <p>
+            Browser and operating system information from your user agent.
+          </p>
+
+          <div
+            class="value"
+            id="software"
+          >
+            —
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- RAW RESPONSE -->
+    <section class="response-section">
+
+      <div class="section-heading">
+
+        <span>RAW RESPONSE</span>
+
+        <h3>JSON returned by the API</h3>
+
+      </div>
+
+
+      <div class="code-window">
+
+        <div class="code-header">
+
+          <span>GET /api/whoami</span>
+
+          <span class="success">
+            200 OK
+          </span>
+
+        </div>
+
+
+        <pre id="jsonResponse">{
+  "message": "Click 'Inspect Request' to query the API."
+}</pre>
+
+      </div>
+
+    </section>
+
+
+    <!-- HOW IT WORKS -->
+    <section class="how-section">
+
+      <div class="section-heading">
+
+        <span>HOW IT WORKS</span>
+
+        <h3>Three pieces of information</h3>
+
+      </div>
+
+
+      <div class="how-grid">
+
+        <div class="how-card">
+
+          <div class="how-icon">
+            IP
+          </div>
+
+          <h4>IP Address</h4>
+
+          <p>
+            Identifies the network address associated with the request.
+          </p>
+
+        </div>
+
+
+        <div class="how-card">
+
+          <div class="how-icon">
+            A
+          </div>
+
+          <h4>Language</h4>
+
+          <p>
+            Reads the browser's Accept-Language request header.
+          </p>
+
+        </div>
+
+
+        <div class="how-card">
+
+          <div class="how-icon">
+            UA
+          </div>
+
+          <h4>User Agent</h4>
+
+          <p>
+            Identifies browser and operating system information.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- FOOTER -->
+  <footer>
+
+    <div class="footer-content">
+
+      <div>
+        <strong>HeaderLens</strong>
+        <span>Request Header Parser Microservice</span>
+      </div>
+
+      <div>
+        Built with Node.js & Express
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <!-- JAVASCRIPT -->
+  <script>
+
+    const inspectBtn =
+      document.getElementById("inspectBtn");
+
+    const ipAddress =
+      document.getElementById("ipAddress");
+
+    const language =
+      document.getElementById("language");
+
+    const software =
+      document.getElementById("software");
+
+    const jsonResponse =
+      document.getElementById("jsonResponse");
+
+
+    inspectBtn.addEventListener("click", async function () {
+
+      inspectBtn.textContent = "Inspecting...";
+
+      try {
+
+        const response =
+          await fetch("/api/whoami");
+
+        const data =
+          await response.json();
+
+
+        ipAddress.textContent =
+          data.ipaddress || "Unknown";
+
+        language.textContent =
+          data.language || "Unknown";
+
+        software.textContent =
+          data.software || "Unknown";
+
+
+        jsonResponse.textContent =
+          JSON.stringify(data, null, 2);
+
+      }
+
+      catch (error) {
+
+        jsonResponse.textContent =
+          JSON.stringify({
+            error: "Unable to connect to API"
+          }, null, 2);
+
+      }
+
+      inspectBtn.textContent =
+        "Inspect Again →";
+
+    });
+
+  </script>
+
+</body>
+
+</html>
